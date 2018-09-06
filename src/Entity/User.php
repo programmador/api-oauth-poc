@@ -56,4 +56,9 @@ class User
 
         return $this;
     }
+
+    public function isPasswordValid(string $plainPassword): bool
+    {
+        return password_verify($plainPassword, $this->password);
+    }
 }
