@@ -1,0 +1,9 @@
+parameters:
+  datafixtures:
+    users:
+      - { name: "Architect Smurf", password: Smurf3 }
+      - { name: "Hackus Smurf", password: Smurf2 }
+      - { name: "Lazy Smurf", password: Smurf4 }
+      - { name: "Paranoid Smurf", password: Smurf5 }
+      - { name: "Smorfily", password: Smurf6 }
+      - { name: "Smurfette", password: Smurf1 }

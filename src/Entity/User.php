@@ -6,6 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
+ * @ORM\Table(name="users")
  */
 class User
 {
@@ -26,10 +27,6 @@ class User
      */
     private $password;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $salt;
 
     public function getId(): ?int
     {
@@ -55,19 +52,7 @@ class User
 
     public function setPassword(string $password): self
     {
-        $this->password = $password;
-
-        return $this;
-    }
-
-    public function getSalt(): ?string
-    {
-        return $this->salt;
-    }
-
-    public function setSalt(string $salt): self
-    {
-        $this->salt = $salt;
+        $this->password = password_hash($password, PASSWORD_BCRYPT, ['cost' => 12]);
 
         return $this;
     }
