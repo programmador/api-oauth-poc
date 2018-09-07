@@ -19,34 +19,24 @@ class UserController extends AbstractController
      *     }
      * )
      */
-    public function grant(Request $request, TokenStorage $tokenStorage)
+    public function grant(Request $request, TokenStorage $ts)
     {
-        // @todo catch any other 500 - it's structure is too complex for api
-
         $r = json_decode($request->getContent());
         if ($r === null && json_last_error() !== JSON_ERROR_NONE) {
             return new JsonResponse("expecting json for input", 400);
         }
-        if(!isset($r->username) || !isset($r->password)) {
-            return new JsonResponse("expecting 'username' and 'password' in input json", 400);
+        if(!isset($r->username) || !isset($r->password) || !isset($r->scope)) {
+            return new JsonResponse("expecting 'username' 'password' and 'scope' in input json",
+                400);
         }
 
         $em = $this->getDoctrine();
         $repo = $em->getRepository(User::class);
         $user = $repo->findOneBy(['name' => $r->username]);
-        if(!$user) {
-            /* Please let this line live here for my educational reasons.
-            Yes, it's really bad to keep commented garbage in code. */
-            //throw $this->createAccessDeniedException();
+        if(!$user || !$user->isPasswordValid($r->password)) {
             return new JsonResponse("wrong 'username' or 'password'", 403);
         }
 
-        if(!$user->isPasswordValid($r->password)) {
-            return new JsonResponse("wrong 'username' or 'password'", 403);
-        }
-
-        // @todo implement token creation and returning
-        $tokenStorage->getToken();
-        return $this->json("expect Your token here soon ;-)");
+        return $this->json($ts->createToken($user->getId(), $r->scope)->toArray());
     }
 }
