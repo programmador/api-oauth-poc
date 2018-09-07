@@ -3,7 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\User;
-use Psr\Log\LoggerInterface;
+use App\Service\TokenStorage;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,7 +19,7 @@ class UserController extends AbstractController
      *     }
      * )
      */
-    public function grant(Request $request, LoggerInterface $logger)
+    public function grant(Request $request, TokenStorage $tokenStorage)
     {
         // @todo catch any other 500 - it's structure is too complex for api
 
@@ -46,7 +46,7 @@ class UserController extends AbstractController
         }
 
         // @todo implement token creation and returning
-        $logger->info('hello! request successful!');
+        $tokenStorage->getToken();
         return $this->json("expect Your token here soon ;-)");
     }
 }
