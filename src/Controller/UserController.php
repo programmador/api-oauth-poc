@@ -37,6 +37,6 @@ class UserController extends AbstractController
             return new JsonResponse("wrong 'username' or 'password'", 403);
         }
 
-        return $this->json($ts->createToken($user->getId(), $r->scope)->toArray());
+        return $this->json($ts->getToken($user->getId(), $r->scope)->toArray());
     }
 }

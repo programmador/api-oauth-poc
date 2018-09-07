@@ -4,29 +4,40 @@ namespace App\Model;
 
 class Token
 {
-    private $access_token;
-    private $mac_key;
-    private $expires_in;
+    private $id;
+    private $key;
+    private $ttl;
     private $scope;
-    private $token_type = 'mac';
+    private $uid;
+    private $type = 'mac';
 
-    public function __construct(string $access_token, string $mac_key, int $expires_in,
-        string $scope)
+    public function __construct(string $id, int $uid, string $macKey, int $minutes, string $scope)
     {
-        $this->access_token = $access_token;
-        $this->mac_key      = $mac_key;
-        $this->expires_in   = $expires_in;
-        $this->scope        = $scope;
+        $this->id       = $id;
+        $this->uid      = $uid;
+        $this->key      = $macKey;
+        $this->ttl      = $minutes;
+        $this->scope    = $scope;
     }
 
     public function toArray() : array
     {
         return [
-            'access_token'  => $this->access_token,
-            'mac_key'       => $this->mac_key,
-            'expires_in'    => $this->expires_in,
+            'access_token'  => $this->id,
+            'mac_key'       => $this->key,
+            'expires_in'    => $this->ttl,
             'scope'         => $this->scope,
-            'token_type'    => $this->token_type,
+            'token_type'    => $this->type,
         ];
+    }
+
+    public function getId() : string
+    {
+        return $this->id;
+    }
+
+    public function getUid() : int
+    {
+        return $this->uid;
     }
 }

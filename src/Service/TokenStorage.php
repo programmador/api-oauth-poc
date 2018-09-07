@@ -2,47 +2,45 @@
 
 namespace App\Service;
 
+use App\Builder\Token\Director;
+use App\Builder\Token\TokenBuilder as Builder;
 use App\Model\Token;
-use Psr\Log\LoggerInterface;
+use Psr\Log\LoggerInterface as Logger;
 use SymfonyBundles\RedisBundle\Redis\ClientInterface as Redis;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface as Container;
 
 class TokenStorage
 {
-    private const KEY_LENGTH    = 16;
-    private const TOKEN_LENGTH  = 16;
-
-    private $container;
     private $expires;
     private $logger;
     private $redis;
 
-    public function __construct(LoggerInterface $logger, Redis $redis,
-        ContainerInterface $container)
+    public function __construct(Logger $logger, Redis $redis, Container $container)
     {
-        $this->container    = $container;
-        $this->expires      = $this->container->getParameter('tokens')['expires_in'];
-        $this->logger       = $logger;
-        $this->redis        = $redis;
+        $this->expires = $container->getParameter('tokens')['expires_in'];
+        $this->logger = $logger;
+        $this->redis = $redis;
     }
 
-    public function getToken()
+    public function getToken(int $uid, string $scope) : Token
     {
-        $messages = [
-            'You did it! You updated the system! Amazing!',
-            'That was one of the coolest updates I\'ve seen all day!',
-            'Great work! Keep going!',
-        ];
-        $index = array_rand($messages);
-        $this->redis->set('tokens:videos:uid', $this->expires);
-        $this->logger->info("hello from service " . $messages[$index]);
-    }
-
-    public function createToken(int $uid, string $scope) : Token
-    {
-        $id = bin2hex(random_bytes(self::TOKEN_LENGTH));
-        $mac = bin2hex(random_bytes(self::KEY_LENGTH));
-        $token = new Token($id, $mac, $this->expires, $scope);
+        $builder = new Builder($this->redis);
+        $director = new Director($builder);
+        $director->constructToken($uid, $scope, $this->expires);
+        $token = $builder->getResult();
+        $this->logTokenGeneration($token);
         return $token;
     }
+
+    /**
+     * I'll leave logging here just for self-education purpose.
+     * It's not a production project.
+     * Never leave such a garbage for production!
+     * At least implement smth like if($debug)
+     */
+    private function logTokenGeneration(Token $token)
+    {
+        $this->logger->info('generated new token ' . $token->getId());
+    }
+
 }
