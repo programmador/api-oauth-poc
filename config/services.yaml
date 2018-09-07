@@ -32,3 +32,4 @@ services:
 
 imports:
     - { resource: fixtures/users.yaml }
+    - { resource: tokens.yaml }
