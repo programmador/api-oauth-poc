@@ -25,6 +25,7 @@
         "symfony/yaml": "*"
     },
     "require-dev": {
+        "codeception/codeception": "^2.4",
         "doctrine/doctrine-fixtures-bundle": "^3.0",
         "symfony/debug-pack": "*",
         "symfony/dotenv": "*",
