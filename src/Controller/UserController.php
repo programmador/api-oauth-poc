@@ -26,22 +26,22 @@ class UserController extends AbstractController
         if ($r === null && json_last_error() !== JSON_ERROR_NONE) {
             return new JsonResponse("expecting json for input", 400);
         }
-        if(!isset($r->name) || !isset($r->password)) {
-            return new JsonResponse("expecting 'name' and 'password' in input json", 400);
+        if(!isset($r->username) || !isset($r->password)) {
+            return new JsonResponse("expecting 'username' and 'password' in input json", 400);
         }
 
         $em = $this->getDoctrine();
         $repo = $em->getRepository(User::class);
-        $user = $repo->findOneBy(['name' => $r->name]);
+        $user = $repo->findOneBy(['name' => $r->username]);
         if(!$user) {
             /* Please let this line live here for my educational reasons.
             Yes, it's really bad to keep commented garbage in code. */
             //throw $this->createAccessDeniedException();
-            return new JsonResponse("wrong 'name' or 'password'", 403);
+            return new JsonResponse("wrong 'username' or 'password'", 403);
         }
 
         if(!$user->isPasswordValid($r->password)) {
-            return new JsonResponse("wrong 'name' or 'password'", 403);
+            return new JsonResponse("wrong 'username' or 'password'", 403);
         }
 
         // @todo implement token creation and returning
