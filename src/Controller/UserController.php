@@ -54,7 +54,8 @@ class UserController extends AbstractController
         $this->validateGrantRequest($r);
         $user = $this->getUserForGrant($r->username);
         $this->validateUserForGrant($user, $r->password);
-        return $this->json($ts->newToken($user->getId(), $r->scope)->toGrantRepresentation());
+        $token = $ts->newToken($user->getId(), $r->scope);
+        return $this->json($token->toGrantResponse());
     }
 
     /**
@@ -86,7 +87,7 @@ class UserController extends AbstractController
         $this->validateValidationRequest($r);
         $token = $ts->findToken($r->token, $r->scope);
         $this->validateTokenForGrant($token);
-        return $this->json($token->toValidateRepresentation());
+        return $this->json($token->toValidateResponse());
     }
 
     private function getJsonRequest(Request $request) : StdClass

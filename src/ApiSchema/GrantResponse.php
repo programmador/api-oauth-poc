@@ -10,6 +10,13 @@ namespace App\ApiSchema;
  */
 class GrantResponse
 {
+    use FillableResponseTrait;
+
+    public function __construct(array $fields)
+    {
+        $this->fill($fields);
+    }
+
     /**
      * @OA\Property(
      *     description="Access token",
@@ -50,4 +57,15 @@ class GrantResponse
      * @var string
      */
     public $scope;
+
+    /**
+     * @OA\Property(
+     *     description="Expiration minutes",
+     *     title="Expiration minutes",
+     *     format="int64",
+     * )
+     *
+     * @var integer
+     */
+    public $expires_in;
 }

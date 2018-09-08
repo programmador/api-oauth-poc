@@ -10,6 +10,13 @@ namespace App\ApiSchema;
  */
 class ValidateResponse
 {
+    use FillableResponseTrait;
+
+    public function __construct(array $fields)
+    {
+        $this->fill($fields);
+    }
+
     /**
      * @OA\Property(
      *     description="User identifier",

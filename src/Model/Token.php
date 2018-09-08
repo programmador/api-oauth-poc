@@ -2,6 +2,9 @@
 
 namespace App\Model;
 
+use App\ApiSchema\GrantResponse;
+use App\ApiSchema\ValidateResponse;
+
 class Token
 {
     private $id;
@@ -20,23 +23,23 @@ class Token
         $this->scope    = $scope;
     }
 
-    public function toGrantRepresentation() : array
+    public function toGrantResponse() : GrantResponse
     {
-        return [
+        return new GrantResponse([
             'access_token'  => $this->id,
             'mac_key'       => $this->key,
             'expires_in'    => $this->ttl,
             'scope'         => $this->scope,
             'token_type'    => $this->type,
-        ];
+        ]);
     }
 
-    public function toValidateRepresentation() : array
+    public function toValidateResponse() : ValidateResponse
     {
-        return [
+        return new ValidateResponse([
             'user_id'       => $this->uid,
             'mac_key'       => $this->key,
-        ];
+        ]);
     }
 
     public function getId() : string

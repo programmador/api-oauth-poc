@@ -77,6 +77,11 @@ components:
           title: Scope
           description: Scope
           type: string
+        expires_in:
+          title: 'Expiration minutes'
+          description: 'Expiration minutes'
+          type: integer
+          format: int64
       type: object
     ValidateRequest:
       title: 'Validate request model'
