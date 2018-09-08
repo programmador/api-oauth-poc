@@ -144,19 +144,19 @@ class GrantScopeCest
     {
         $userFixture = $I->getUserFixtures()[0];
         $request = [
-            'scope' => 'any_scope',
-            'username' => $userFixture['name'],
-            'password' => $userFixture['password']
+            'scope'     => 'any_scope',
+            'username'  => $userFixture['name'],
+            'password'  => $userFixture['password']
         ];
         $I->sendPOST('grant', json_encode($request));
         $I->seeResponseCodeIs(HttpCode::OK); // 200
         $I->seeResponseIsJson();
         $I->seeResponseMatchesJsonType([
-            'access_token' => 'string',
-            'mac_key' => 'string',
-            'expires_in' => 'integer',
-            'scope' => 'string',
-            'token_type' => 'string',
+            'access_token'  => 'string',
+            'mac_key'       => 'string',
+            'expires_in'    => 'integer',
+            'scope'         => 'string',
+            'token_type'    => 'string',
         ]);
     }
 

@@ -2,6 +2,8 @@
 
 namespace App\Tests\Helper;
 
+use App\Model\Token;
+use App\Service\TokenStorage;
 use Codeception\Module;
 use Psr\Log\LoggerInterface as Logger;
 use Symfony\Component\DependencyInjection\ContainerInterface as Container;
@@ -17,11 +19,24 @@ class Api extends Module
         $this->getLogger()->info($response);
     }
 
+    public function getNewToken() : Token
+    {
+        $uid = 123;
+        $scope = 'any_scope';
+        $ts = $this->getTokenStorage();
+        return $ts->newToken($uid, $scope);
+    }
+
     public function getUserFixtures() : array
     {
         $config = $this->getContainer()->getParameter('datafixtures');
         $users = $config['users'];
         return $users;
+    }
+
+    public function getTokenStorage() : TokenStorage
+    {
+        return $this->getContainer()->get(TokenStorage::class);
     }
 
     public function getLogger() : Logger

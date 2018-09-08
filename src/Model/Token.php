@@ -37,7 +37,7 @@ class Token
     public function toValidateResponse() : ValidateResponse
     {
         return new ValidateResponse([
-            'user_id'       => $this->uid,
+            'uid'       => $this->uid,
             'mac_key'       => $this->key,
         ]);
     }
@@ -47,13 +47,18 @@ class Token
         return $this->id;
     }
 
-    public function getUid() : int
+    public function getUid() : ?int
     {
         return $this->uid;
     }
 
-    public function getMacKey() : string
+    public function getMacKey() : ?string
     {
         return $this->key;
+    }
+
+    public function getScope() : string
+    {
+        return $this->scope;
     }
 }
