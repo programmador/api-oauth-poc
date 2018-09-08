@@ -2,11 +2,14 @@
 
 namespace App\Controller;
 
+use App\ApiSchema\GrantRequest;
 use App\Entity\User;
 use App\Service\TokenStorage;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -44,22 +47,42 @@ class UserController extends AbstractController
      */
     public function grant(Request $request, TokenStorage $ts)
     {
+        $r = $this->getJsonRequest($request);
+        $this->validateGrantRequest($r);
+        $user = $this->getUserForGrant($r->username);
+        $this->validateUserForGrant($user, $r->password);
+        return $this->json($ts->getToken($user->getId(), $r->scope)->toArray());
+    }
+
+    private function getJsonRequest(Request $request) : GrantRequest
+    {
         $r = json_decode($request->getContent());
         if ($r === null && json_last_error() !== JSON_ERROR_NONE) {
-            return new JsonResponse("expecting json for input", 400);
+            throw new BadRequestHttpException("expecting json for input");
         }
-        if(!isset($r->username) || !isset($r->password) || !isset($r->scope)) {
-            return new JsonResponse("expecting 'username' 'password' and 'scope' in input json",
-                400);
-        }
+        return new GrantRequest($r);
+    }
 
+    private function validateGrantRequest(GrantRequest $r)
+    {
+        if(!isset($r->username) || !isset($r->password) || !isset($r->scope)) {
+            throw new BadRequestHttpException(
+                "expecting 'username' 'password' and 'scope' in input json"
+            );
+        }
+    }
+
+    private function getUserForGrant(string $name) : ?User
+    {
         $em = $this->getDoctrine();
         $repo = $em->getRepository(User::class);
-        $user = $repo->findOneBy(['name' => $r->username]);
-        if(!$user || !$user->isPasswordValid($r->password)) {
-            return new JsonResponse("wrong 'username' or 'password'", 403);
-        }
+        return $repo->findOneBy(compact('name'));
+    }
 
-        return $this->json($ts->getToken($user->getId(), $r->scope)->toArray());
+    private function validateUserForGrant(?User $user, ?string $password)
+    {
+        if(!$password || !$user || !$user->isPasswordValid($password)) {
+            throw new AccessDeniedHttpException("wrong 'username' or 'password'");
+        }
     }
 }

@@ -21,7 +21,18 @@ class GrantScopeCest
         $I->sendPOST('grant', $request);    // no json_encode() call
         $I->seeResponseCodeIs(HttpCode::BAD_REQUEST); // 400
         $I->seeResponseIsJson();
-        $I->seeResponseContainsJson(["expecting json for input"]);
+        $expectedResponse = [
+            'error' => [
+                'code' => HttpCode::BAD_REQUEST,
+                'message' => 'Bad Request',
+                'exception' => [
+                    [
+                        'message' => "expecting json for input",
+                    ],
+                ],
+            ],
+        ];
+        $I->seeResponseContainsJson($expectedResponse);
     }
 
     public function testRequestWithoutUsernameFails(ApiTester $I)
@@ -30,7 +41,18 @@ class GrantScopeCest
         $I->sendPOST('grant', json_encode($request));
         $I->seeResponseCodeIs(HttpCode::BAD_REQUEST); // 400
         $I->seeResponseIsJson();
-        $I->seeResponseContainsJson(["expecting 'username' 'password' and 'scope' in input json"]);
+        $expectedResponse = [
+            'error' => [
+                'code' => HttpCode::BAD_REQUEST,
+                'message' => 'Bad Request',
+                'exception' => [
+                    [
+                        'message' => "expecting 'username' 'password' and 'scope' in input json",
+                    ],
+                ],
+            ],
+        ];
+        $I->seeResponseContainsJson($expectedResponse);
     }
 
     public function testRequestWithoutPasswordFails(ApiTester $I)
@@ -39,7 +61,18 @@ class GrantScopeCest
         $I->sendPOST('grant', json_encode($request));
         $I->seeResponseCodeIs(HttpCode::BAD_REQUEST); // 400
         $I->seeResponseIsJson();
-        $I->seeResponseContainsJson(["expecting 'username' 'password' and 'scope' in input json"]);
+        $expectedResponse = [
+            'error' => [
+                'code' => HttpCode::BAD_REQUEST,
+                'message' => 'Bad Request',
+                'exception' => [
+                    [
+                        'message' => "expecting 'username' 'password' and 'scope' in input json",
+                    ],
+                ],
+            ],
+        ];
+        $I->seeResponseContainsJson($expectedResponse);
     }
 
     public function testRequestWithoutScopeFails(ApiTester $I)
@@ -48,7 +81,18 @@ class GrantScopeCest
         $I->sendPOST('grant', json_encode($request));
         $I->seeResponseCodeIs(HttpCode::BAD_REQUEST); // 400
         $I->seeResponseIsJson();
-        $I->seeResponseContainsJson(["expecting 'username' 'password' and 'scope' in input json"]);
+        $expectedResponse = [
+            'error' => [
+                'code' => HttpCode::BAD_REQUEST,
+                'message' => 'Bad Request',
+                'exception' => [
+                    [
+                        'message' => "expecting 'username' 'password' and 'scope' in input json",
+                    ],
+                ],
+            ],
+        ];
+        $I->seeResponseContainsJson($expectedResponse);
     }
 
     public function testRequestWithNonsenseUsernameFails(ApiTester $I)
@@ -57,7 +101,18 @@ class GrantScopeCest
         $I->sendPOST('grant', json_encode($request));
         $I->seeResponseCodeIs(HttpCode::FORBIDDEN); // 403
         $I->seeResponseIsJson();
-        $I->seeResponseContainsJson(["wrong 'username' or 'password'"]);
+        $expectedResponse = [
+            'error' => [
+                'code' => HttpCode::FORBIDDEN,
+                'message' => 'Forbidden',
+                'exception' => [
+                    [
+                        'message' => "wrong 'username' or 'password'",
+                    ],
+                ],
+            ],
+        ];
+        $I->seeResponseContainsJson($expectedResponse);
     }
 
     public function testRequestWithWrongPasswordFails(ApiTester $I)
@@ -71,7 +126,18 @@ class GrantScopeCest
         $I->sendPOST('grant', json_encode($request));
         $I->seeResponseCodeIs(HttpCode::FORBIDDEN); // 403
         $I->seeResponseIsJson();
-        $I->seeResponseContainsJson(["wrong 'username' or 'password'"]);
+        $expectedResponse = [
+            'error' => [
+                'code' => HttpCode::FORBIDDEN,
+                'message' => 'Forbidden',
+                'exception' => [
+                    [
+                        'message' => "wrong 'username' or 'password'",
+                    ],
+                ],
+            ],
+        ];
+        $I->seeResponseContainsJson($expectedResponse);
     }
 
     public function testRequestWithValidCredentialsSuccess(ApiTester $I)

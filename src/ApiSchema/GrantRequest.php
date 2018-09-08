@@ -2,6 +2,8 @@
 
 namespace App\ApiSchema;
 
+use StdClass;
+
 /**
  * @OA\Schema(
  *     title="Grant request model",
@@ -10,6 +12,15 @@ namespace App\ApiSchema;
  */
 class GrantRequest
 {
+    public function __construct(StdClass $r)
+    {
+        foreach(get_object_vars($this) as $n => $v) {
+            if(property_exists($r, $n)) {
+                $this->{$n} = $r->{$n};
+            }
+        }
+    }
+
     /**
      * @OA\Property(
      *     description="Username",
@@ -18,7 +29,7 @@ class GrantRequest
      *
      * @var string
      */
-    private $username;
+    public $username;
 
     /**
      * @OA\Property(
@@ -28,7 +39,7 @@ class GrantRequest
      *
      * @var string
      */
-    private $password;
+    public $password;
 
     /**
      * @OA\Property(
@@ -38,5 +49,5 @@ class GrantRequest
      *
      * @var string
      */
-    private $scope;
+    public $scope;
 }
