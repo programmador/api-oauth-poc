@@ -9,6 +9,13 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
+/**
+ * @OA\Info(
+ *         version="1.0.0",
+ *         title="Mauris User API",
+ *         description="Mauris User API",
+ * )
+ */
 class UserController extends AbstractController
 {
     /**
@@ -18,6 +25,22 @@ class UserController extends AbstractController
      *         "_format": "json",
      *     }
      * )
+     *
+     * @OA\Post(
+     *     path="/grant",
+     *     @OA\RequestBody(
+     *         request="Grant",
+     *         description="Grant request",
+     *         required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/GrantRequest"),
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Grant response",
+     *         @OA\JsonContent(ref="#/components/schemas/GrantResponse")
+     *     )
+     * )
+     *
      */
     public function grant(Request $request, TokenStorage $ts)
     {

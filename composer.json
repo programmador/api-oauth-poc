@@ -22,7 +22,8 @@
         "symfony/twig-bundle": "*",
         "symfony/validator": "*",
         "symfony/web-link": "*",
-        "symfony/yaml": "*"
+        "symfony/yaml": "*",
+        "zircote/swagger-php": "^3.0"
     },
     "require-dev": {
         "codeception/codeception": "^2.4",

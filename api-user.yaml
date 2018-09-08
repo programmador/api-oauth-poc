@@ -1,0 +1,64 @@
+openapi: 3.0.0
+info:
+  title: 'Mauris User API'
+  description: 'Mauris User API'
+  version: 1.0.0
+paths:
+  /grant:
+    post:
+      operationId: 'App\Controller\UserController::grant'
+      requestBody:
+        request: Grant
+        description: 'Grant request'
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GrantRequest'
+      responses:
+        '200':
+          description: 'Grant response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GrantResponse'
+components:
+  schemas:
+    GrantRequest:
+      title: 'Grant request model'
+      description: 'Grant request model'
+      properties:
+        username:
+          title: Username
+          description: Username
+          type: string
+        password:
+          title: Password
+          description: Password
+          type: string
+        scope:
+          title: Scope
+          description: Scope
+          type: string
+      type: object
+    GrantResponse:
+      title: 'Grant response model'
+      description: 'Grant response model'
+      properties:
+        access_token:
+          title: 'Access token'
+          description: 'Access token'
+          type: string
+        mac_key:
+          title: 'Mac key'
+          description: 'Mac key'
+          type: string
+        token_type:
+          title: 'Token type'
+          description: 'Token type'
+          type: string
+        scope:
+          title: Scope
+          description: Scope
+          type: string
+      type: object
