@@ -26,7 +26,7 @@ TODO: tests should run all migrations up and down at least once
 Updating swagger / openapi file:
 
 ```
-php vendor/bin/openapi --output api-user.yaml .
+php vendor/bin/openapi --output api-user.yaml src
 ```
 
 TODO: describe failure responses
