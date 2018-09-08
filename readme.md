@@ -28,3 +28,5 @@ Updating swagger / openapi file:
 ```
 php vendor/bin/openapi --output api-user.yaml .
 ```
+
+TODO: describe failure responses
