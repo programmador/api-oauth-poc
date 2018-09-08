@@ -32,7 +32,6 @@ class UserController extends AbstractController
      * @OA\Post(
      *     path="/grant",
      *     @OA\RequestBody(
-     *         request="Grant",
      *         description="Grant request",
      *         required=true,
      *         @OA\JsonContent(ref="#/components/schemas/GrantRequest"),

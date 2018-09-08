@@ -8,7 +8,6 @@ paths:
     post:
       operationId: 'App\Controller\UserController::grant'
       requestBody:
-        request: Grant
         description: 'Grant request'
         required: true
         content:
