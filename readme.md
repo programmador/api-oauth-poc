@@ -13,6 +13,9 @@ php bin/console doctrine:fixtures:load
 Fill database with aforementioned user fixtures first!
 
 ```
-php vendor/bin/codecept build
 php vendor/bin/codecept run api
 ```
+
+TODO: tests should have a separate database though for this specific project it's senseless
+TODO: tests should fill database with fixtures themselves
+TODO: tests should run all migrations up and down at least once

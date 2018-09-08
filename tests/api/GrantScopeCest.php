@@ -20,6 +20,7 @@ class GrantScopeCest
         $request = ['non json' => 'request'];
         $I->sendPOST('grant', $request);    // no json_encode() call
         $I->seeResponseCodeIs(HttpCode::BAD_REQUEST); // 400
+        $I->seeResponseIsJson();
         $I->seeResponseContainsJson(["expecting json for input"]);
     }
 
@@ -28,6 +29,7 @@ class GrantScopeCest
         $request = ['scope' => 'a', 'password' => 'b'];
         $I->sendPOST('grant', json_encode($request));
         $I->seeResponseCodeIs(HttpCode::BAD_REQUEST); // 400
+        $I->seeResponseIsJson();
         $I->seeResponseContainsJson(["expecting 'username' 'password' and 'scope' in input json"]);
     }
 
@@ -36,6 +38,7 @@ class GrantScopeCest
         $request = ['scope' => 'a', 'username' => 'b'];
         $I->sendPOST('grant', json_encode($request));
         $I->seeResponseCodeIs(HttpCode::BAD_REQUEST); // 400
+        $I->seeResponseIsJson();
         $I->seeResponseContainsJson(["expecting 'username' 'password' and 'scope' in input json"]);
     }
 
@@ -44,6 +47,7 @@ class GrantScopeCest
         $request = ['username' => 'a', 'password' => 'b'];
         $I->sendPOST('grant', json_encode($request));
         $I->seeResponseCodeIs(HttpCode::BAD_REQUEST); // 400
+        $I->seeResponseIsJson();
         $I->seeResponseContainsJson(["expecting 'username' 'password' and 'scope' in input json"]);
     }
 
@@ -52,6 +56,7 @@ class GrantScopeCest
         $request = ['scope' => 'a', 'username' => 'b', 'password' => 'c'];
         $I->sendPOST('grant', json_encode($request));
         $I->seeResponseCodeIs(HttpCode::FORBIDDEN); // 403
+        $I->seeResponseIsJson();
         $I->seeResponseContainsJson(["wrong 'username' or 'password'"]);
     }
 
@@ -65,6 +70,34 @@ class GrantScopeCest
         ];
         $I->sendPOST('grant', json_encode($request));
         $I->seeResponseCodeIs(HttpCode::FORBIDDEN); // 403
+        $I->seeResponseIsJson();
         $I->seeResponseContainsJson(["wrong 'username' or 'password'"]);
     }
+
+    public function testRequestWithValidCredentialsSuccess(ApiTester $I)
+    {
+        $userFixture = $I->getUserFixtures()[0];
+        $request = [
+            'scope' => 'any_scope',
+            'username' => $userFixture['name'],
+            'password' => $userFixture['password']
+        ];
+        $I->sendPOST('grant', json_encode($request));
+        $I->seeResponseCodeIs(HttpCode::OK); // 200
+        $I->seeResponseIsJson();
+        $I->seeResponseMatchesJsonType([
+            'access_token' => 'string',
+            'mac_key' => 'string',
+            'expires_in' => 'integer',
+            'scope' => 'string',
+            'token_type' => 'string',
+        ]);
+    }
+
+    /* @todo test response values:
+       - token_type is actually constant
+       - access_token and mac_key should be distinct and should have specific length
+       - access_token and mac_key should have specific length from a config
+       - expires should have specific value from a config
+    */
 }
