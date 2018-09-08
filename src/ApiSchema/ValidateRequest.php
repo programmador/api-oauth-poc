@@ -6,11 +6,11 @@ use StdClass;
 
 /**
  * @OA\Schema(
- *     title="Grant request model",
- *     description="Grant request model",
+ *     title="Validate request model",
+ *     description="Validate request model",
  * )
  */
-class GrantRequest
+class ValidateRequest
 {
     use FillableRequestTrait;
 
@@ -21,23 +21,13 @@ class GrantRequest
 
     /**
      * @OA\Property(
-     *     description="Username",
-     *     title="Username",
+     *     description="Token",
+     *     title="Token",
      * )
      *
      * @var string
      */
-    public $username;
-
-    /**
-     * @OA\Property(
-     *     description="Password",
-     *     title="Password",
-     * )
-     *
-     * @var string
-     */
-    public $password;
+    public $token;
 
     /**
      * @OA\Property(

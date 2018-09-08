@@ -18,7 +18,7 @@ class GrantResponse
      *
      * @var string
      */
-    private $access_token;
+    public $access_token;
 
     /**
      * @OA\Property(
@@ -28,7 +28,7 @@ class GrantResponse
      *
      * @var string
      */
-    private $mac_key;
+    public $mac_key;
 
     /**
      * @OA\Property(
@@ -38,7 +38,7 @@ class GrantResponse
      *
      * @var string
      */
-    private $token_type;
+    public $token_type;
 
 
     /**
@@ -49,5 +49,5 @@ class GrantResponse
      *
      * @var string
      */
-    private $scope;
+    public $scope;
 }

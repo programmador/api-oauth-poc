@@ -11,7 +11,7 @@ class Token
     private $uid;
     private $type = 'mac';
 
-    public function __construct(string $id, int $uid, string $macKey, int $minutes, string $scope)
+    public function __construct(string $id, ?int $uid, ?string $macKey, ?int $minutes, string $scope)
     {
         $this->id       = $id;
         $this->uid      = $uid;
@@ -20,7 +20,7 @@ class Token
         $this->scope    = $scope;
     }
 
-    public function toArray() : array
+    public function toGrantRepresentation() : array
     {
         return [
             'access_token'  => $this->id,
@@ -28,6 +28,14 @@ class Token
             'expires_in'    => $this->ttl,
             'scope'         => $this->scope,
             'token_type'    => $this->type,
+        ];
+    }
+
+    public function toValidateRepresentation() : array
+    {
+        return [
+            'user_id'       => $this->uid,
+            'mac_key'       => $this->key,
         ];
     }
 
@@ -39,5 +47,10 @@ class Token
     public function getUid() : int
     {
         return $this->uid;
+    }
+
+    public function getMacKey() : string
+    {
+        return $this->key;
     }
 }

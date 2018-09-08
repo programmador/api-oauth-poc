@@ -3,13 +3,17 @@
 namespace App\Controller;
 
 use App\ApiSchema\GrantRequest;
+use App\ApiSchema\ValidateRequest;
 use App\Entity\User;
+use App\Model\Token;
 use App\Service\TokenStorage;
+use StdClass;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -46,20 +50,52 @@ class UserController extends AbstractController
      */
     public function grant(Request $request, TokenStorage $ts)
     {
-        $r = $this->getJsonRequest($request);
+        $r = new GrantRequest($this->getJsonRequest($request));
         $this->validateGrantRequest($r);
         $user = $this->getUserForGrant($r->username);
         $this->validateUserForGrant($user, $r->password);
-        return $this->json($ts->getToken($user->getId(), $r->scope)->toArray());
+        return $this->json($ts->newToken($user->getId(), $r->scope)->toGrantRepresentation());
     }
 
-    private function getJsonRequest(Request $request) : GrantRequest
+    /**
+     * @Route("/validate", name="validate", methods={"POST"},
+     *     defaults={"_format": "json"},
+     *     requirements={
+     *         "_format": "json",
+     *     }
+     * )
+     *
+     * @OA\Post(
+     *     path="/validate",
+     *     @OA\RequestBody(
+     *         description="Validate request",
+     *         required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/ValidateRequest"),
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Validate response",
+     *         @OA\JsonContent(ref="#/components/schemas/ValidateResponse")
+     *     )
+     * )
+     *
+     */
+    public function validate(Request $request, TokenStorage $ts)
+    {
+        $r = new ValidateRequest($this->getJsonRequest($request));
+        $this->validateValidationRequest($r);
+        $token = $ts->findToken($r->token, $r->scope);
+        $this->validateTokenForGrant($token);
+        return $this->json($token->toValidateRepresentation());
+    }
+
+    private function getJsonRequest(Request $request) : StdClass
     {
         $r = json_decode($request->getContent());
         if ($r === null && json_last_error() !== JSON_ERROR_NONE) {
             throw new BadRequestHttpException("expecting json for input");
         }
-        return new GrantRequest($r);
+        return $r;
     }
 
     private function validateGrantRequest(GrantRequest $r)
@@ -67,6 +103,15 @@ class UserController extends AbstractController
         if(!isset($r->username) || !isset($r->password) || !isset($r->scope)) {
             throw new BadRequestHttpException(
                 "expecting 'username' 'password' and 'scope' in input json"
+            );
+        }
+    }
+
+    private function validateValidationRequest(ValidateRequest $r)
+    {
+        if(!isset($r->token) || !isset($r->scope)) {
+            throw new BadRequestHttpException(
+                "expecting 'token' and 'scope' in input json"
             );
         }
     }
@@ -82,6 +127,13 @@ class UserController extends AbstractController
     {
         if(!$password || !$user || !$user->isPasswordValid($password)) {
             throw new AccessDeniedHttpException("wrong 'username' or 'password'");
+        }
+    }
+
+    private function validateTokenForGrant(Token $token)
+    {
+        if(!$token->getUid() || !$token->getMacKey()) {
+            throw new NotFoundHttpException("token not found");
         }
     }
 }

@@ -5,12 +5,8 @@ namespace App\Builder\Token;
 use App\Model\Token;
 use SymfonyBundles\RedisBundle\Redis\ClientInterface as Redis;
 
-class TokenBuilder implements Builder
+class NewTokenBuilder implements Builder
 {
-
-    private const KEY_START     = 'grant';
-    private const KEY_PART_UID  = 'uid';
-    private const KEY_PART_MAC  = 'key';
 
     private $tokenId;
     private $uid;
@@ -59,13 +55,13 @@ class TokenBuilder implements Builder
 
     private function syncRedis()
     {
-        $this->syncPart($this->tokenId, $this->scope, self::KEY_PART_UID, $this->uid);
-        $this->syncPart($this->tokenId, $this->scope, self::KEY_PART_MAC, $this->macKey);
+        $this->syncPart($this->tokenId, $this->scope, Builder::KEY_PART_UID, $this->uid);
+        $this->syncPart($this->tokenId, $this->scope, Builder::KEY_PART_MAC, $this->macKey);
     }
 
     private function syncPart(string $tokenId, string $scope, string $key, string $value)
     {
-        $key = implode(':', [self::KEY_START, $scope, $tokenId, $key]);
+        $key = implode(':', [Builder::KEY_START, $scope, $tokenId, $key]);
         $this->redis->set($key, $value);
         $this->redis->expire($key, $this->getExpireSeconds());
     }

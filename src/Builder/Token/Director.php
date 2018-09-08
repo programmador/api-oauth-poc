@@ -14,13 +14,20 @@ class Director
         $this->builder = $builder;
     }
 
-    public function constructToken(int $uid, string $scope, int $ttl) : self
+    public function constructNewToken(int $uid, string $scope, int $ttl) : self
     {
         $this->builder->setTokenId($this->getAccessToken());
         $this->builder->setUid($uid);
         $this->builder->setKey($this->getMacKey());
         $this->builder->setScope($scope);
         $this->builder->setTtl($ttl);
+        return $this;
+    }
+
+    public function constructFoundToken(string $token, string $scope) : self
+    {
+        $this->builder->setTokenId($token);
+        $this->builder->setScope($scope);
         return $this;
     }
 

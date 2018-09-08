@@ -21,6 +21,23 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/GrantResponse'
+  /validate:
+    post:
+      operationId: 'App\Controller\UserController::validate'
+      requestBody:
+        description: 'Validate request'
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ValidateRequest'
+      responses:
+        '200':
+          description: 'Validate response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidateResponse'
 components:
   schemas:
     GrantRequest:
@@ -59,5 +76,32 @@ components:
         scope:
           title: Scope
           description: Scope
+          type: string
+      type: object
+    ValidateRequest:
+      title: 'Validate request model'
+      description: 'Validate request model'
+      properties:
+        token:
+          title: Token
+          description: Token
+          type: string
+        scope:
+          title: Scope
+          description: Scope
+          type: string
+      type: object
+    ValidateResponse:
+      title: 'Validate response model'
+      description: 'Validate response model'
+      properties:
+        uid:
+          title: 'User identifier'
+          description: 'User identifier'
+          type: integer
+          format: int64
+        mac_key:
+          title: 'Mac key'
+          description: 'Mac key'
           type: string
       type: object
