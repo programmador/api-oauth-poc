@@ -1,0 +1,21 @@
+{
+    "name": "programmador/mapi-client",
+    "description": "Sample REST API Oauth client",
+    "type": "project",
+    "require": {
+        "nategood/httpful": "dev-master"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "app/"
+        }
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Alexander Konotop",
+            "email": "alexander.konotop@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev"
+}
