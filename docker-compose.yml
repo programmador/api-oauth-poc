@@ -14,7 +14,7 @@ services:
       - postgres
       - redis
     restart: always
-    command: /var/www/html/startup.sh
+    command: ["/usr/bin/wait-for-it.sh", "mapi-postgres:5432", "--", "/var/www/html/startup.sh"]
   mapi-tester:
     build:
       dockerfile: ./docker/Dockerfile
@@ -24,7 +24,7 @@ services:
       - mapi-user
     depends_on:
       - mapi-user
-    command: ["/usr/bin/wait-for-it.sh", "mapi-user:80", "--", "php", "public/app.php"]
+    command: ["/usr/bin/wait-for-it.sh", "mapi-user:80", "-t", "60", "--", "php", "public/app.php"]
   redis:
     image: redis
     container_name: c-redis

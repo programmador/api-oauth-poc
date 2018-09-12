@@ -24,6 +24,7 @@ COPY docker/.htaccess /var/www/html
 COPY docker/.env /var/www/html
 COPY docker/startup.sh /var/www/html
 RUN php /usr/local/bin/composer install
+COPY docker/wait-for-it.sh /usr/bin/
 
 EXPOSE 80
 RUN a2enmod rewrite
