@@ -26,14 +26,14 @@ class BuenasDias
 
     private function getGrantResponse(string $username, string $password, string $scope) : StdClass
     {
-        $uri = 'http://api-user.mauris.com/grant';
+        $uri = 'http://' . USER_API_HOST . '/grant';
         $request = compact('username', 'password', 'scope');
         return $this->getRestResponse($uri, $request);
     }
 
     private function getValidateResponse(string $token, string $scope) : StdClass
     {
-        $uri = 'http://api-user.mauris.com/validate';
+        $uri = 'http://' . USER_API_HOST . '/validate';
         $request = compact('token', 'scope');
         return $this->getRestResponse($uri, $request);
     }

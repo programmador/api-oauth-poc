@@ -2,6 +2,12 @@
 
 ## Database
 
+Run migrations
+
+```
+php bin/console doctrine:migrations:migrate
+```
+
 Fill database with fake users:
 
 ```
@@ -28,5 +34,7 @@ Updating swagger / openapi file:
 ```
 php vendor/bin/openapi --output api-user.yaml src
 ```
+
+See also [existing generated docs](api-user.yaml)
 
 TODO: describe failure responses

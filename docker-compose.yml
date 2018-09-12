@@ -1,0 +1,36 @@
+version: '2'
+services:
+  mapi-user:
+    build:
+      dockerfile: ./docker/Dockerfile
+      context: ./api-user
+    container_name: c-mapi-user
+    ports:
+      - "8080:80"
+    links:
+      - redis
+      - postgres
+    depends_on:
+      - postgres
+      - redis
+    restart: always
+    command: /var/www/html/startup.sh
+  mapi-tester:
+    build:
+      dockerfile: ./docker/Dockerfile
+      context: ./client
+    container_name: c-mapi-tester
+    links:
+      - mapi-user
+    depends_on:
+      - mapi-user
+    command: ["/usr/bin/wait-for-it.sh", "mapi-user:80", "--", "php", "public/app.php"]
+  redis:
+    image: redis
+    container_name: c-redis
+    restart: always
+  postgres:
+    image: postgres:10
+    restart: always
+    container_name: c-postgres
+    env_file: ./api-user/docker/postgresql.env
